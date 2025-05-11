@@ -47,4 +47,11 @@ app/
 ├── crud/
 │   ├── user.py          ←  Crud операции (создание, чтение, обновление, удаление) для пользователей
 │   
+└── alembic/
+
+Миграции:
+
+alembic revision --autogenerate -m "your comment"  - созлание миграции
+alembic upgrade head - применение миграции
+
 '''
