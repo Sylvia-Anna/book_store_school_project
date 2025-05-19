@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from routes import templates
+
+from services.auth_service import register_user, login_user
+from services.jwt_handler import create_access_token, decode_token
 
 router = APIRouter()
 
@@ -34,7 +37,24 @@ async def register(request: Request):
     username = form.get("username")
     password = form.get("password")
     
-    # Здесь должна быть логика регистрации пользователя
-    # Например, сохранение пользователя в базе данных
+    try: 
+        await register_user(username, password)
+        # jwt выдача токена если логин и пароль верные
+        access_token = create_access_token(data={"sub": username})
+        
+        redirect = RedirectResponse(url="/", status_code=303)
+        redirect.set_cookie(
+            key="access_token",
+            value=access_token,
+            httponly=True,  # Защита от JS
+            max_age=1800,
+            path="/main",
+            samesite="lax",
+        )
+        return redirect
     
-    return templates.TemplateResponse("welcome.html", {"request": request})
+    except ValueError as e:
+        return templates.TemplateResponse("register.html", {"request": request, "error": str(e)})
+    
+    
+    #return templates.TemplateResponse("welcome.html", {"request": request})

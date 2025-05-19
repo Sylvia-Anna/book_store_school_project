@@ -8,6 +8,11 @@
 </head>
 <body class="bg-light d-flex align-items-center justify-content-center vh-100">
 
+    {% if error %}
+        <div class="alert alert-danger mt-3" role="alert">
+            {{ error }}
+        </div>
+    {% endif %}
     <div class="card shadow rounded-4 p-4" style="width: 100%; max-width: 400px;">
         <h3 class="text-center mb-4">Sign up</h3>
         <form action="/register" method="post">
